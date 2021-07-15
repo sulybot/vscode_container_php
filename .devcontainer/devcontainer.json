@@ -9,9 +9,7 @@
         "felixfbecker.php-debug",
         "neilbrayfield.php-docblocker",
         "st-pham.php-refactor-tool",
-        "phiter.phpstorm-snippets",
-    ],
-
-    "forwardPorts": [80, 3306],
-    // "remoteUser": "vscode"
+        "eamodio.gitlens",
+        "junstyle.php-cs-fixer"
+    ]
 }
