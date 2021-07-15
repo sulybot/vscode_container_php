@@ -1,4 +1,6 @@
-FROM php:fpm-alpine
+ARG PHP_VERSION=fpm-alpine
+
+FROM php:$PHP_VERSION
 
 # software resouce mirror for alpine apk
 ARG ALPINE_PACKAGE_REPO_MIRROR
@@ -23,8 +25,7 @@ RUN if [ "${TZ}" != "" ]; then \
         echo "$TZ" > /etc/timezone; \
     fi
 
-ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
-# ADD https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/master/install-php-extensions /usr/local/bin/
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 
 RUN chmod uga+x /usr/local/bin/install-php-extensions && sync && \
     install-php-extensions $PHP_EXTENSIONS && \
@@ -34,6 +35,8 @@ RUN chmod uga+x /usr/local/bin/install-php-extensions && sync && \
 ENV COMPOSER_HOME=/tmp/composer
 
 RUN curl -o /usr/bin/composer https://mirrors.aliyun.com/composer/composer.phar \
-    && chmod +x /usr/bin/composer && /usr/bin/composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+    && chmod +x /usr/bin/composer && /usr/bin/composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/ \
+    && curl -o /usr/bin/php-cs-fixer https://cs.symfony.com/download/php-cs-fixer-v2.phar \
+    && chmod +x /usr/bin/php-cs-fixer
 
 RUN apk --no-cache add shadow && usermod -u ${UID} www-data && groupmod -g ${GID} www-data
